@@ -1,0 +1,11 @@
+services:
+  main:
+    build:
+      context: .
+    ports:
+      - 127.0.0.1:2000:22
+      - 27016:27016/udp
+    volumes:
+      - ./data/torch:/home/admin/torch
+      - ./data/ssh_etc:/etc/ssh
+      - ./data/ssh_admin:/home/admin/.ssh

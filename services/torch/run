@@ -1,0 +1,50 @@
+#!/bin/bash
+set -o errexit
+set -o nounset
+set -o pipefail
+
+name=torch
+
+log() {
+    local msg=$1; shift
+
+    echo -e "\033[1;36m$name: $msg\033[0m"
+}
+
+main() {
+    local torch_dir='/home/admin/torch'
+    local torch_exe="$torch_dir/Torch.Server.exe"
+
+    log 'Initializing'
+    if [ ! -e "$torch_exe" ]; then
+        log 'Installing Torch'
+        static-dl \
+            --url http://build.torchapi.com/job/Torch/job/master/243/artifact/bin/torch-server.zip \
+            --hash e94fb5aa872047e4db1b3b1ab3774a3b18366c675b7d8b1080f9907c096e78af \
+            --out /tmp/torch-server.zip \
+        && unzip -d "$torch_dir" /tmp/torch-server.zip \
+        && rm /tmp/torch-server.zip
+    fi
+
+    if [ ! -e "$torch_exe" ]; then
+        log 'Error: Torch installation failed. Exiting.'
+        exit  # 'Zero' status code so that the supervisor doesn't restart the service.
+    fi
+
+    log 'Starting service: Torch server under Xpra'
+    export DISPLAY=:42
+    exec sudo -u root \
+        env \
+            WINEPREFIX='/home/admin/.wine' \
+            WINEDEBUG=fixme-all \
+            xpra start "$DISPLAY" \
+                --uid=1000 \
+                --gid=1000 \
+                --chdir=/home/admin \
+                --daemon=no \
+                --use-display \
+                --exit-with-children \
+                --start-child="wine $torch_exe"
+}
+
+main

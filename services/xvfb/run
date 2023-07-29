@@ -1,0 +1,16 @@
+#!/bin/bash
+set -o errexit
+set -o nounset
+set -o pipefail
+
+name=xvfb
+
+log() {
+    local msg=$1; shift
+
+    echo -e "\033[1;36m$name: $msg\033[0m"
+}
+
+log 'Starting service: Xvfb'
+export DISPLAY=:42
+exec Xvfb "$DISPLAY" -screen 0 1366x768x24

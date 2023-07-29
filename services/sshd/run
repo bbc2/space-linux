@@ -1,0 +1,25 @@
+#!/bin/bash
+set -o errexit
+set -o nounset
+set -o pipefail
+
+name=sshd
+
+log() {
+    local msg=$1; shift
+
+    echo -e "\033[1;36m$name: $msg\033[0m"
+}
+
+main () {
+    if [ ! -e /etc/ssh/sshd_config ]; then
+        log 'Reconfiguring OpenSSH'
+        cp /root/services/sshd/data/sshd.conf /etc/ssh/sshd_config
+        dpkg-reconfigure openssh-server
+    fi
+
+    log 'Starting service: OpenSSH server'
+    exec /usr/sbin/sshd -D
+}
+
+main
