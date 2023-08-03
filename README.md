@@ -49,16 +49,11 @@ Make sure those ports are not blocked by the host's firewall.
 Connect to the container with SSH or Xpra:
 
 ```sh
-xpra attach \
-    --ssh 'ssh -o StrictHostKeyChecking=accept-new' \
-    --key-shortcut 'Control_R:toggle_keyboard_grab' \
-    --notifications=no \
-    --speaker=no \
-    --system-tray=no \
-    --webcam=no \
-    --xsettings=no \
-    ssh://admin@localhost:2000/42
+SL_REMOTE_HOST=foo.example.net make connect-remote-xpra
 ```
+
+Note that this Makefile target is only an example. Feel free to modify the actual
+connection command. For example, you may need to adjust the SSH command with `--ssh`.
 
 The Torch Server can crash for many reasons, for example if you start the server without a
 world. In such a case, the server will restart automatically and you'll have to try again

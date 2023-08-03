@@ -16,12 +16,12 @@ serve:  ## Build and start server
 reset-ssh-fingerprint:
 	ssh-keygen -R [localhost]:2000  # This is OK since the server is on the local host.
 
-.PHONY: connect-ssh
-connect-ssh:  reset-ssh-fingerprint  ## Connect to the local server with Xpra
+.PHONY: connect-local-ssh
+connect-local-ssh:  reset-ssh-fingerprint  ## Connect to the local server with Xpra
 	ssh -o StrictHostKeyChecking=accept-new -p 2000 admin@localhost
 
-.PHONY: connect-xpra
-connect-xpra:  reset-ssh-fingerprint  ## Connect to the local server with Xpra
+.PHONY: connect-local-xpra
+connect-local-xpra:  reset-ssh-fingerprint  ## Connect to the local server with Xpra
 	xpra attach \
 		--ssh 'ssh -o StrictHostKeyChecking=accept-new' \
 		--key-shortcut 'Control_R:toggle_keyboard_grab' \
@@ -31,3 +31,18 @@ connect-xpra:  reset-ssh-fingerprint  ## Connect to the local server with Xpra
 		--webcam=no \
 		--xsettings=no \
 		ssh://admin@localhost:2000/42
+
+.PHONY: connect-remote-ssh
+connect-remote-ssh:  ## Connect to the local server with Xpra
+	ssh -p 2000 "admin@${SL_REMOTE_HOST}"
+
+.PHONY: connect-remote-xpra
+connect-remote-xpra:  ## Connect to the local server with Xpra
+	xpra attach \
+		--key-shortcut 'Control_R:toggle_keyboard_grab' \
+		--notifications=no \
+		--speaker=no \
+		--system-tray=no \
+		--webcam=no \
+		--xsettings=no \
+		"ssh://admin@${SL_REMOTE_HOST}:2000/42"
