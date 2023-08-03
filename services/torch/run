@@ -21,9 +21,9 @@ main() {
         static-dl \
             --url http://build.torchapi.com/job/Torch/job/master/243/artifact/bin/torch-server.zip \
             --hash e94fb5aa872047e4db1b3b1ab3774a3b18366c675b7d8b1080f9907c096e78af \
-            --out /tmp/torch-server.zip \
-        && unzip -d "$torch_dir" /tmp/torch-server.zip \
-        && rm /tmp/torch-server.zip
+            --out /tmp/torch-server.zip
+        unzip -d "$torch_dir" /tmp/torch-server.zip \
+        rm /tmp/torch-server.zip
     fi
 
     if [ ! -e "$torch_exe" ]; then
